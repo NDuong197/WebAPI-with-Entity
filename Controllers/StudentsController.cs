@@ -48,5 +48,37 @@ namespace WebAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPut("UpdatePhoto/{id}")]
+        public async Task<IActionResult> UpdatePhoto(int id, [FromBody] string base64ImageString)
+        {
+            // Tìm sinh viên trong cơ sở dữ liệu bằng ID
+            var student = await _context.Students.FindAsync(id);
+
+            if (student == null)
+            {
+                return NotFound(); // Trả về mã lỗi 404 nếu không tìm thấy sinh viên
+            }
+
+            // Kiểm tra xem base64ImageString có hợp lệ không
+            if (string.IsNullOrWhiteSpace(base64ImageString))
+            {
+                return BadRequest("Base64 image string is required and cannot be empty.");
+            }
+
+            // Cập nhật trường Photo của sinh viên
+            student.Photo = base64ImageString;
+
+            // Lưu các thay đổi vào cơ sở dữ liệu
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(); // Trả về mã 200 OK khi cập nhật thành công
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

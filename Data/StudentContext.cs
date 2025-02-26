@@ -13,6 +13,23 @@ namespace WebAPI.Data
         }
 
         public DbSet<Student> Students { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Student>()
+                .Property(s => s.Name)
+                .IsRequired(true);
 
+            modelBuilder.Entity<Student>()
+                .Property(s => s.Age)
+                .IsRequired(true);
+
+            modelBuilder.Entity<Student>()
+                .Property(s => s.Class)
+                .IsRequired(true);
+
+            modelBuilder.Entity<Student>()
+                .Property(s => s.Photo)
+                .IsRequired(false);
+        }
     }
 }
